@@ -1,6 +1,6 @@
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import PluginCommand
-from cloudmesh.rivanna.api.manager import Manager
+from cloudmesh.rivanna.rivanna import Rivanna
 from cloudmesh.common.console import Console
 from cloudmesh.common.util import path_expand
 from pprint import pprint
@@ -19,32 +19,32 @@ class RivannaCommand(PluginCommand):
         ::
 
           Usage:
-                rivanna --file=FILE
-                rivanna list
-                rivanna [--parameter=PARAMETER] [--experiment=EXPERIMENT] [COMMAND...]
+                rivanna storage info DIRECTORY [--info]
+                rivanna login gpu=GPU [--info]
 
-          This command does some useful things.
+          This command simplifys access to rivanna.
 
           Arguments:
-              FILE   a file name
-              PARAMETER  a parameterized parameter of the form "a[0-3],a5"
+              DIRECTORY  a location of a directory on rivanna
 
           Options:
               -f      specify the file
 
           Description:
 
-            > cms rivanna --parameter="a[1-2,5],a10"
-            >    example on how to use Parameter.expand. See source code at
-            >      https://github.com/cloudmesh/cloudmesh-rivanna/blob/main/cloudmesh/rivanna/command/rivanna.py
-            >    prints the expanded parameter as a list
-            >    ['a1', 'a2', 'a3', 'a4', 'a5', 'a10']
+            rivanna storage info DIRECTORY [--info]
+                A command that can be executed remotely and obtains information about the storage associated
+                with a directory on rivanna
 
-            > rivanna exp --experiment=a=b,c=d
-            > example on how to use Parameter.arguments_to_dict. See source code at
-            >      https://github.com/cloudmesh/cloudmesh-rivanna/blob/main/cloudmesh/rivanna/command/rivanna.py
-            > prints the parameter as dict
-            >   {'a': 'b', 'c': 'd'}
+            rivanna interactive gpu=GPU [--info]
+                A command that logs into from your current computer into an interactive node on rivanna
+                with a given GPU. Values for GPU are
+
+                a100 or a100-80 -- uses a A100 with 80GB
+                a100 or a100-40 -- uses a A100 with 80GB
+                a100-localscratch  -- uses a A100 with 80GB and access to localscratch
+
+                others to be added from rivannas hardware description
 
         """
 
@@ -56,41 +56,18 @@ class RivannaCommand(PluginCommand):
         variables = Variables()
         variables["debug"] = True
 
-        banner("original arguments", color="RED")
+        VERBOSE(arguments)
+
+        map_parameters(arguments, "gpu")
 
         VERBOSE(arguments)
 
-        banner("rewriting arguments so we can use . notation for file, parameter, and experiment", color="RED")
+        rivanna = Rivanna()
 
-        map_parameters(arguments, "file", "parameter", "experiment")
+        if arguments.storage:
 
-        VERBOSE(arguments)
-
-        banner("rewriting arguments so we convert to appropriate types for easier handeling", color="RED")
-
-        arguments = Parameter.parse(arguments,
-                                    parameter='expand',
-                                    experiment='dict',
-                                    COMMAND='str')
-
-
-        VERBOSE(arguments)
-
-        banner("showcasing tom simple if parsing based on teh dotdict", color="RED")
-
-        m = Manager()
-
-        #
-        # It is important to keep the programming here to a minimum and any substantial programming ought
-        # to be conducted in a separate class outside the command parameter manipulation. If between the
-        # elif statement you have more than 10 lines, you may consider putting it in a class that you import
-        # here and have propper methods in that class to handle the functionality. See the Manager class for
-        # an example.
-        #
-
-        if arguments.file:
-            print("option a")
-            m.list(path_expand(arguments.file))
+            content = rivanna.login(gpu=arguments.GPU)
+            print(content)
 
         elif arguments.list:
             print("option b")
