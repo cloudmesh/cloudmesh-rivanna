@@ -36,7 +36,7 @@ class RivannaCommand(PluginCommand):
                 A command that can be executed remotely and obtains information about the storage associated
                 with a directory on rivanna
 
-            rivanna interactive gpu=GPU [--info]
+            rivanna login gpu=GPU [--info]
                 A command that logs into from your current computer into an interactive node on rivanna
                 with a given GPU. Values for GPU are
 
@@ -56,8 +56,6 @@ class RivannaCommand(PluginCommand):
         variables = Variables()
         variables["debug"] = True
 
-        VERBOSE(arguments)
-
         map_parameters(arguments, "gpu")
 
         VERBOSE(arguments)
@@ -66,18 +64,12 @@ class RivannaCommand(PluginCommand):
 
         if arguments.storage:
 
+            Console.error("not implemented")
+
+        elif arguments.login:
+
             content = rivanna.login(gpu=arguments.GPU)
             print(content)
-
-        elif arguments.list:
-            print("option b")
-            m.list("just calling list without parameter")
-
-
-        Console.error("This is just a sample of an error")
-        Console.warning("This is just a sample of a warning")
-        Console.info("This is just a sample of an info")
-
-        Console.info(" You can witch debugging on and off with 'cms debug on' or 'cms debug off'")
+            Console.error("not implemented")
 
         return ""
