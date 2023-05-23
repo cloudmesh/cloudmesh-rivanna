@@ -1,3 +1,5 @@
+from cloudmesh.common.Shell import Shell
+
 class Rivanna:
 
     def __init__(self):
@@ -53,3 +55,6 @@ class Rivanna:
         :return:
         :rtype:
         """
+
+    def browser(self, url):
+        Shell.browser(filename=url)

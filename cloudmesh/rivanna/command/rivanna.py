@@ -21,6 +21,7 @@ class RivannaCommand(PluginCommand):
           Usage:
                 rivanna storage info DIRECTORY [--info]
                 rivanna login gpu=GPU [--info]
+                rivanna tutorial [KEYWORD]
 
           This command simplifys access to rivanna.
 
@@ -46,6 +47,21 @@ class RivannaCommand(PluginCommand):
 
                 others to be added from rivannas hardware description
 
+            rivanna tutorial singularity
+                shows the rivanna singularity information on infomall.org
+
+            rivanna tutorial hpc
+                shows the general rivanna hpc information on infomall.org
+
+            rivanna tutorial pod
+                shows the general rivanna pod information on infomall.org
+
+            rivanna tutorial globue
+                shows the general rivanna globus information on infomall.org
+
+            rivanna tutorial rclone
+                shows the general rivanna rclone information on infomall.org
+
         """
 
 
@@ -58,7 +74,7 @@ class RivannaCommand(PluginCommand):
 
         map_parameters(arguments, "gpu")
 
-        VERBOSE(arguments)
+        # VERBOSE(arguments)
 
         rivanna = Rivanna()
 
@@ -71,5 +87,32 @@ class RivannaCommand(PluginCommand):
             content = rivanna.login(gpu=arguments.GPU)
             print(content)
             Console.error("not implemented")
+
+        elif arguments.tutorial:
+
+            keyword = arguments.KEYWORD
+
+            if keyword in ["pod"]:
+                rivanna.browser("https://infomall.org/uva/docs/tutorial/rivanna-superpod/")
+
+            elif keyword in ["rclone"]:
+                rivanna.browser("https://infomall.org/uva/docs/tutorial/rclone/")
+
+            elif keyword in ["globus"]:
+                rivanna.browser("https://infomall.org/uva/docs/tutorial/globus/")
+
+            elif keyword in ["singularity"]:
+                rivanna.browser("https://infomall.org/uva/docs/tutorial/singularity/")
+
+            elif keyword in ["training"]:
+                rivanna.browser("https://infomall.org/uva/docs/tutorial/cybertraining/")
+
+            elif keyword in ["hpc", "system"]:
+                rivanna.browser("https://infomall.org/uva/docs/tutorial/rivanna/")
+
+
+
+            else:
+                rivanna.browser("https://infomall.org/uva/docs/tutorial/")
 
         return ""
