@@ -12,7 +12,7 @@ class Rivanna:
               cores="1",
               allocation="bii_dsc_community",
               gres="gpu:v100:1",
-              time="30:00"
+              time="30:00",
         ):
         """
         ssh on rivanna by executing an interactive job command

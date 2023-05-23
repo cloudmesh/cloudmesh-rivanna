@@ -20,7 +20,7 @@ class RivannaCommand(PluginCommand):
 
           Usage:
                 rivanna storage info DIRECTORY [--info]
-                rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--cores=CORES] [--host=HOST] [--time=TIME]
+                rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--cores=CORES] [--host=HOST] [--time=TIME] [KEY]
                 rivanna tutorial [KEYWORD]
                 rivanna vpn on
                 rivanna vpn off
@@ -107,8 +107,9 @@ class RivannaCommand(PluginCommand):
         variables = Variables()
         variables["debug"] = True
 
-        map_parameters(arguments, "gpu")
+        map_parameters(arguments, "gpu", "gress", "allocation", "cores", "time")
 
+        key = arguments.KEY
         # VERBOSE(arguments)
 
         rivanna = Rivanna()
@@ -128,7 +129,23 @@ class RivannaCommand(PluginCommand):
             host = arguments.host or "rivanna"
             cores = arguments.cores or 1
             allocation = arguments.allocation or "bii_dsc_community"
-            gres = arguments.gres or "gpu:v100:1"
+            if arguments.gres is not None:
+                gres = arguments.gres
+            elif key in ["v100"]:
+                gres = "gpu:v100:1"
+            elif key in ["a100"]:
+                gres = "gpu:a100:1"
+            elif key in ["a100-localscratch"]:
+                gres = "gpu:a100:1"
+                Console.Error("not yet implemented")
+                return ""
+            elif key in ["k80"]:
+                gres = "gpu:k80:1"
+            elif key in ["p100"]:
+                gres = "gpu:p100:1"
+            else:
+                gres = "gpu:v100:1"
+
             time = arguments.time or "30:00"
 
             rivanna.login(
