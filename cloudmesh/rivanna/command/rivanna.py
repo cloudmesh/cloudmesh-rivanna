@@ -22,6 +22,11 @@ class RivannaCommand(PluginCommand):
                 rivanna storage info DIRECTORY [--info]
                 rivanna login gpu=GPU [--info]
                 rivanna tutorial [KEYWORD]
+                rivanna vpn on
+                rivanna vpn off
+                rivanna vpn info
+                rivanna vpn status
+
 
           This command simplifys access to rivanna.
 
@@ -62,6 +67,31 @@ class RivannaCommand(PluginCommand):
             rivanna tutorial rclone
                 shows the general rivanna rclone information on infomall.org
 
+            rivanna vpn on
+                switches the vpn on
+
+            rivanna vpn off
+                switches the vpn off
+
+            rivanna vpn info
+                prints the information about the current connection to the
+                internet. INformation includes
+
+                  "ip": "128.143.1.11",
+                  "hostname": "vpn-user-1-11.itc.virginia.edu",
+                  "city": "Charlottesville",
+                  "region": "Virginia",
+                  "country": "US",
+                  "loc": "38.0293,-78.4767",
+                  "org": "AS225 University of Virginia",
+                  "postal": "22902",
+                  "timezone": "America/New_York",
+                  "readme": "https://ipinfo.io/missingauth"
+
+            rivanna vpn status
+                prints True if vpn is enabled, False if not
+
+
           Installation:
 
             pip install cloudmesh-rivana
@@ -83,6 +113,12 @@ class RivannaCommand(PluginCommand):
 
         rivanna = Rivanna()
 
+        def VPN():
+            from cloudmesh.vpn.vpn import Vpn
+            vpn = Vpn(None,
+                      timeout=30)
+            return vpn
+
         if arguments.storage:
 
             Console.error("not implemented")
@@ -92,6 +128,40 @@ class RivannaCommand(PluginCommand):
             content = rivanna.login(gpu=arguments.GPU)
             print(content)
             Console.error("not implemented")
+
+        elif arguments.vpn and arguments.on:
+
+            vpn = VPN()
+
+            Console.ok("Connecting ... ")
+            vpn.connect()
+            if vpn.enabled():
+                Console.ok("ok")
+            else:
+                Console.error("failed")
+
+        elif arguments.vpn and arguments.off:
+
+            vpn = VPN()
+
+            Console.ok("Disconnecting ... ")
+            vpn.disconnect()
+            if not vpn.enabled():
+                Console.ok("ok")
+            else:
+                Console.error("failed")
+
+        elif arguments.vpn and arguments.status:
+
+            vpn = VPN()
+
+            print(vpn.enabled())
+
+        elif arguments.vpn and arguments.info:
+
+            vpn = VPN()
+
+            print(vpn.info())
 
         elif arguments.tutorial:
 
