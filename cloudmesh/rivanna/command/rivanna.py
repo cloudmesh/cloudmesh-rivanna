@@ -62,6 +62,11 @@ class RivannaCommand(PluginCommand):
             rivanna tutorial rclone
                 shows the general rivanna rclone information on infomall.org
 
+          Installation:
+
+            pip install cloudmesh-rivana
+            cms help
+
         """
 
 
