@@ -20,7 +20,7 @@ class RivannaCommand(PluginCommand):
 
           Usage:
                 rivanna storage info DIRECTORY [--info]
-                rivanna login gpu=GPU [--info]
+                rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--cores=CORES] [--host=HOST] [--time=TIME]
                 rivanna tutorial [KEYWORD]
                 rivanna vpn on
                 rivanna vpn off
@@ -42,12 +42,12 @@ class RivannaCommand(PluginCommand):
                 A command that can be executed remotely and obtains information about the storage associated
                 with a directory on rivanna
 
-            rivanna login gpu=GPU [--info]
+            rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--cores=CORES] [--host=HOST] [--time=TIME]
                 A command that logs into from your current computer into an interactive node on rivanna
                 with a given GPU. Values for GPU are
 
                 a100 or a100-80 -- uses a A100 with 80GB
-                a100 or a100-40 -- uses a A100 with 80GB
+                a100-40 -- uses a A100 with 40GB
                 a100-localscratch  -- uses a A100 with 80GB and access to localscratch
 
                 others to be added from rivannas hardware description
@@ -125,9 +125,18 @@ class RivannaCommand(PluginCommand):
 
         elif arguments.login:
 
-            content = rivanna.login(gpu=arguments.GPU)
-            print(content)
-            Console.error("not implemented")
+            host = arguments.host or "rivanna"
+            cores = arguments.cores or 1
+            allocation = arguments.allocation or "bii_dsc_community"
+            gres = arguments.gres or "gpu:v100:1"
+            time = arguments.time or "30:00"
+
+            rivanna.login(
+                host=host,
+                cores=cores,
+                allocation=allocation,
+                gres=gres,
+                time=time)
 
         elif arguments.vpn and arguments.on:
 
