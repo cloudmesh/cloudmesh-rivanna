@@ -13,7 +13,13 @@ class Rivanna:
               allocation="bii_dsc_community",
               gres="gpu:v100:1",
               time="30:00",
-        ):
+              partition="gpu",
+              constraint=None,
+              reservation=None,
+              account=None,
+              debug=False
+
+    ):
         """
         ssh on rivanna by executing an interactive job command
 
@@ -24,10 +30,27 @@ class Rivanna:
         :return:
         :rtype:
         """
-        command = f'ssh -tt {host} "/opt/rci/bin/ijob -c {cores} -A {allocation} -p gpu --gres={gres} --time={time}"'
+        if account is None:
+            account = ""
+        else:
+            account = f"--account={account}"
+        if partition is None:
+            partition = ""
+        else:
+            partition = f"--partition={partition}"
+        if constraint is None:
+            constraint = ""
+        else:
+            constraint = f"--constraint={constraint}"
+        if reservation is None:
+            reservation = ""
+        else:
+            reservation = f"--reservation={reservation}"
+        command = f'ssh -tt {host} "/opt/rci/bin/ijob {reservation} {constraint} {account} -c {cores} {partition} --gres={gres} --time={time}"'
 
         Console.msg(command)
-        os.system(command)
+        if not debug:
+            os.system(command)
         return ""
 
 

@@ -20,12 +20,13 @@ class RivannaCommand(PluginCommand):
 
           Usage:
                 rivanna storage info DIRECTORY [--info]
-                rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--cores=CORES] [--host=HOST] [--time=TIME] [KEY]
+                rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--constraint=CONSTRAINT] [--partition=PARTITION] [--cores=CORES] [--host=HOST] [--time=TIME] [KEY] [--debug]
                 rivanna tutorial [KEYWORD]
                 rivanna vpn on
                 rivanna vpn off
                 rivanna vpn info
                 rivanna vpn status
+                rivanna ticket
 
 
           This command simplifys access to rivanna.
@@ -42,7 +43,7 @@ class RivannaCommand(PluginCommand):
                 A command that can be executed remotely and obtains information about the storage associated
                 with a directory on rivanna
 
-            rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--cores=CORES] [--host=HOST] [--time=TIME]
+            rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--cores=CORES] [--host=HOST] [--constraint=CONSTRAINT] [--reservation=RESERVATION] [--time=TIME]
                 A command that logs into from your current computer into an interactive node on rivanna
                 with a given GPU. Values for GPU are
 
@@ -107,7 +108,16 @@ class RivannaCommand(PluginCommand):
         variables = Variables()
         variables["debug"] = True
 
-        map_parameters(arguments, "gpu", "gress", "allocation", "cores", "time")
+        map_parameters(arguments,
+                       "gpu",
+                       "gress",
+                       "allocation",
+                       "cores",
+                       "time",
+                       "constariant",
+                       "reservation",
+                       "partition",
+                       "debug")
 
         key = arguments.KEY
         # VERBOSE(arguments)
@@ -126,34 +136,73 @@ class RivannaCommand(PluginCommand):
 
         elif arguments.login:
 
+            debug = arguments.debug
             host = arguments.host or "rivanna"
+            reservation = arguments.reservation
             cores = arguments.cores or 1
+            constraint = arguments.constraint
             allocation = arguments.allocation or "bii_dsc_community"
+            partition = arguments.partition
             if arguments.gres is not None:
                 gres = arguments.gres
             elif key in ["v100"]:
                 gres = "gpu:v100:1"
             elif key in ["a100"]:
                 gres = "gpu:a100:1"
+            #elif key in ["a100-40"]:
+            #    gres = "gpu:a100:1"
+            #    reservation = "a100_40gb"
+            #elif key in ["a100-80"]:
+            #    gres = "gpu:a100:1"
+            #    reservation = "a100_80gb"
             elif key in ["a100-localscratch"]:
+
                 gres = "gpu:a100:1"
-                Console.Error("not yet implemented")
-                return ""
+                reservation="bi_fox_dgx"
+                #constraint="a100_80gb"
+                partition="bii-gpu"
+                account="bii_dsc_community"
+
+                # SBATCH --mem=64GB
+
             elif key in ["k80"]:
                 gres = "gpu:k80:1"
             elif key in ["p100"]:
                 gres = "gpu:p100:1"
+            elif key in ["pod", "a100-pod"]:
+                gres = "gpu:a100:1"
+                alllocations = "superpodtest"
+                constraint = "gpupod"
+            elif key in ["pod"]:
+                gres = "gpu:a100:1"
+                alllocations = "superpodtest"
+                constraint = "gpupod"
+                # reservation="bi_fox_dgx"
+                constraint="a100_80gb"
+            elif key in ["a100-dsc"]:
+                gres = "gpu:a100:1"
+                alllocations = "superpodtest"
+                constraint = "gpupod"
+                reservation="bi_fox_dgx"
+                constraint="a100_80gb"
             else:
                 gres = "gpu:v100:1"
+                constraint = ""
 
             time = arguments.time or "30:00"
 
             rivanna.login(
+                constraint=constraint,
+                reservation=reservation,
                 host=host,
                 cores=cores,
                 allocation=allocation,
                 gres=gres,
-                time=time)
+                time=time,
+                account=account,
+                partition=partition,
+                debug=debug
+            )
 
         elif arguments.vpn and arguments.on:
 
@@ -215,5 +264,9 @@ class RivannaCommand(PluginCommand):
 
             else:
                 rivanna.browser("https://infomall.org/uva/docs/tutorial/")
+
+        elif arguments.ticket:
+
+            rivanna.browser("https://www.rc.virginia.edu/form/support-request/")
 
         return ""
