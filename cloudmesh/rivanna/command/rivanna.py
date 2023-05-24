@@ -144,18 +144,32 @@ class RivannaCommand(PluginCommand):
             allocation = arguments.allocation or "bii_dsc_community"
             partition = arguments.partition
             if arguments.gres is not None:
+
                 gres = arguments.gres
+
             elif key in ["v100"]:
+
                 gres = "gpu:v100:1"
+                partition="bii-gpu"
+                account="bii_dsc_community"
+                constraint = None
+                reservation=None
+
             elif key in ["a100"]:
+
                 gres = "gpu:a100:1"
+                partition="gpu"
+                account="bii_dsc_community"
+                constraint = None
+                reservation=None
+
             #elif key in ["a100-40"]:
             #    gres = "gpu:a100:1"
             #    reservation = "a100_40gb"
             #elif key in ["a100-80"]:
             #    gres = "gpu:a100:1"
             #    reservation = "a100_80gb"
-            elif key in ["a100-localscratch"]:
+            elif key in ["a100-localscratch", "a100-dsc"]:
 
                 gres = "gpu:a100:1"
                 reservation="bi_fox_dgx"
@@ -166,28 +180,44 @@ class RivannaCommand(PluginCommand):
                 # SBATCH --mem=64GB
 
             elif key in ["k80"]:
+
                 gres = "gpu:k80:1"
+                partition="gpu"
+                account="bii_dsc_community"
+                constraint = None
+                reservation=None
+
             elif key in ["p100"]:
+
                 gres = "gpu:p100:1"
+                partition="gpu"
+                account="bii_dsc_community"
+                constraint = None
+                reservation=None
+
             elif key in ["pod", "a100-pod"]:
+
                 gres = "gpu:a100:1"
                 alllocations = "superpodtest"
                 constraint = "gpupod"
+
             elif key in ["pod"]:
+
                 gres = "gpu:a100:1"
                 alllocations = "superpodtest"
                 constraint = "gpupod"
                 # reservation="bi_fox_dgx"
                 constraint="a100_80gb"
-            elif key in ["a100-dsc"]:
-                gres = "gpu:a100:1"
-                alllocations = "superpodtest"
-                constraint = "gpupod"
-                reservation="bi_fox_dgx"
-                constraint="a100_80gb"
+
             else:
+
                 gres = "gpu:v100:1"
-                constraint = ""
+                partition="bii-gpu"
+                account="bii_dsc_community"
+                constraint = None
+                reservation=None
+
+
 
             time = arguments.time or "30:00"
 
