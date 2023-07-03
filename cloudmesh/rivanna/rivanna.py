@@ -39,6 +39,14 @@ class Rivanna:
               account: "bii_dsc_community"
               constraint: "gpupod"
               partition: gpu
+            rtx2080:
+              gres: "gpu:rtx2080:1"
+              partition: "gpu"
+              account: "bii_dsc_community"
+            rtx3090:
+              gres: "gpu:rtx3090:1"
+              partition: "gpu"
+              account: "bii_dsc_community"          
           greene:
             v100:
               gres: "gpu:v100:1"
