@@ -23,8 +23,8 @@ class RivannaCommand(PluginCommand):
           Usage:
                 rivanna storage info DIRECTORY [--info]
                 rivanna login [--sbatch=SBATCH] [--host=HOST] [KEY] [--debug]
-                rivanna directive slurm info
-                rivanna directive slurm [--sbatch=SBATCH] [--host=HOST] [KEY] [--debug]
+                rivanna slurm info
+                rivanna slurm [--sbatch=SBATCH] [--host=HOST] [KEY] [--debug]
                 rivanna tutorial [KEYWORD]
                 rivanna vpn on
                 rivanna vpn off
@@ -119,13 +119,14 @@ class RivannaCommand(PluginCommand):
 
         host = arguments.host = arguments.host or "rivanna"
 
-        VERBOSE(arguments)
+        # VERBOSE(arguments)
 
         key = arguments.KEY
         # VERBOSE(arguments)
 
 
         rivanna = Rivanna()
+        rivanna.debub = arguments.debug
 
         def VPN():
             from cloudmesh.vpn.vpn import Vpn
@@ -141,6 +142,8 @@ class RivannaCommand(PluginCommand):
 
             key = arguments.KEY
 
+            rivanna.directive[host][key].update({"time": "30:00"})
+
             if arguments.sbatch:
 
                 data = rivanna.parse_sbatch_parameter(arguments.sbatch)
@@ -152,18 +155,18 @@ class RivannaCommand(PluginCommand):
 
             rivanna.login(host, key)
 
-        elif arguments.directive and arguments.slurm and arguments.info:
+        elif arguments.slurm and arguments.info:
 
            print(yaml.dump(rivanna.directive))
 
-        elif arguments.directive and arguments.slurm and arguments.KEY and not arguments.login:
+        elif arguments.slurm and arguments.KEY and not arguments.login:
 
             key = arguments.KEY
 
             if arguments.sbatch:
-
                 data = rivanna.parse_sbatch_parameter(arguments.sbatch)
                 rivanna.directive[host][key].update(data)
+
 
             d = rivanna.directive[host][key]
             slurm_directive = rivanna.create_slurm_directives(host=host, key=key)

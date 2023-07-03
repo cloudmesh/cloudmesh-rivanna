@@ -8,21 +8,20 @@ import yaml
 class Rivanna:
 
 
-    def __init__(self, host="rivanna"):
+    def __init__(self, host="rivanna", debug=False):
+        self.debug = debug
         self.data = dedent(
           """
           rivanna:
             v100:
-              gpu: v100
               gres: "gpu:v100:1"
               partition: "bii-gpu"
               account: "bii_dsc_community"
             a100:
-              gpu: a100
               gres: "gpu:a100:1"
               partition: "gpu"
               account: "bii_dsc_community"
-            a100-localscratch:
+            a100-dgx:
               gres: "gpu:a100:1"
               reservation: "bi_fox_dgx"
               partition: "bii-gpu"
@@ -38,7 +37,6 @@ class Rivanna:
             a100-pod:
               gres: "gpu:a100:1"
               account: "bii_dsc_community"
-              alllocations: "superpodtest"
               constraint: "gpupod"
               partition: gpu
           greene:
@@ -104,8 +102,8 @@ class Rivanna:
         command = f'ssh -tt {host} "/opt/rci/bin/ijob{parameters}"'
 
         Console.msg(command)
-        # if not self.debug:
-        #     os.system(command)
+        if not self.debug:
+             os.system(command)
         return ""
 
 
