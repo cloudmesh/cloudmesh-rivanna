@@ -1,3 +1,5 @@
+import yaml
+
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import PluginCommand
 from cloudmesh.rivanna.rivanna import Rivanna
@@ -20,7 +22,7 @@ class RivannaCommand(PluginCommand):
 
           Usage:
                 rivanna storage info DIRECTORY [--info]
-                rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--constraint=CONSTRAINT] [--partition=PARTITION] [--cores=CORES] [--host=HOST] [--time=TIME] [KEY] [--debug]
+                rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--constraint=CONSTRAINT] [--partition=PARTITION] [--cores=CORES] [--host=HOST] [--time=TIME] [--host=HOST] [KEY] [--debug]
                 rivanna directive slurm list
                 rivanna directive slurm [--allocation=ALLOCATION] [--gres=GRES] [--constraint=CONSTRAINT] [--partition=PARTITION] [--cores=CORES] [--cpus=CPUS] [--host=HOST] [--time=TIME] [KEY] [--debug]
                 rivanna tutorial [KEYWORD]
@@ -119,12 +121,15 @@ class RivannaCommand(PluginCommand):
                        "constariant",
                        "reservation",
                        "partition",
+                       "host",
                        "debug")
 
         key = arguments.KEY
         # VERBOSE(arguments)
 
-        rivanna = Rivanna()
+        host = arguments.host or "rivanna"
+
+        rivanna = Rivanna(host=host)
 
         def VPN():
             from cloudmesh.vpn.vpn import Vpn
@@ -138,7 +143,7 @@ class RivannaCommand(PluginCommand):
 
         elif arguments.directive and arguments.slurm and arguments.list:
 
-            print (rivanna.diretcive)
+           print(yaml.dump(rivanna.directive))
 
         elif arguments.directive and arguments.slurm and arguments.KEY and not arguments.login:
 
