@@ -22,9 +22,9 @@ class RivannaCommand(PluginCommand):
 
           Usage:
                 rivanna storage info DIRECTORY [--info]
-                rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--constraint=CONSTRAINT] [--partition=PARTITION] [--cores=CORES] [--host=HOST] [--time=TIME] [--host=HOST] [KEY] [--debug]
-                rivanna directive slurm list
-                rivanna directive slurm [--allocation=ALLOCATION] [--gres=GRES] [--constraint=CONSTRAINT] [--partition=PARTITION] [--cores=CORES] [--cpus=CPUS] [--host=HOST] [--time=TIME] [KEY] [--debug]
+                rivanna login [--sbatch=SBATCH] [--host=HOST] [KEY] [--debug]
+                rivanna directive slurm info
+                rivanna directive slurm [--sbatch=SBATCH] [--host=HOST] [KEY] [--debug]
                 rivanna tutorial [KEYWORD]
                 rivanna vpn on
                 rivanna vpn off
@@ -113,23 +113,19 @@ class RivannaCommand(PluginCommand):
         variables["debug"] = True
 
         map_parameters(arguments,
-                       "gpu",
-                       "gress",
-                       "allocation",
-                       "cores",
-                       "time",
-                       "constariant",
-                       "reservation",
-                       "partition",
                        "host",
+                       "sbatch",
                        "debug")
+
+        host = arguments.host = arguments.host or "rivanna"
+
+        VERBOSE(arguments)
 
         key = arguments.KEY
         # VERBOSE(arguments)
 
-        host = arguments.host or "rivanna"
 
-        rivanna = Rivanna(host=host)
+        rivanna = Rivanna()
 
         def VPN():
             from cloudmesh.vpn.vpn import Vpn
@@ -141,7 +137,22 @@ class RivannaCommand(PluginCommand):
 
             Console.error("not implemented")
 
-        elif arguments.directive and arguments.slurm and arguments.list:
+        elif arguments.login:
+
+            key = arguments.KEY
+
+            if arguments.sbatch:
+
+                data = rivanna.parse_sbatch_parameter(arguments.sbatch)
+                rivanna.directive[host][key].update(data)
+
+            d = rivanna.directive[host][key]
+
+            time = arguments.time or "30:00"
+
+            rivanna.login(host, key)
+
+        elif arguments.directive and arguments.slurm and arguments.info:
 
            print(yaml.dump(rivanna.directive))
 
@@ -149,125 +160,16 @@ class RivannaCommand(PluginCommand):
 
             key = arguments.KEY
 
-            d = rivanna.directive[key]
+            if arguments.sbatch:
 
-            slurm_directive = rivanna.create_slurm_directives(d)
+                data = rivanna.parse_sbatch_parameter(arguments.sbatch)
+                rivanna.directive[host][key].update(data)
+
+            d = rivanna.directive[host][key]
+            slurm_directive = rivanna.create_slurm_directives(host=host, key=key)
 
             print(slurm_directive)
 
-        elif arguments.directive and arguments.slurm:
-
-            directive = rivanna.create_slurm_directives(
-                    constraint=arguments.constraint,
-                    reservation=arguments.reservation,
-                    cores=arguments.cores,
-                    account=arguments.account,
-                    gres=arguments.gres,
-                    time=arguments.time,
-                    partition=arguments.partition,
-                    cpus=arguments.cpus,
-            )
-
-
-        elif arguments.login:
-
-            debug = arguments.debug
-            host = arguments.host or "rivanna"
-            reservation = arguments.reservation
-            cores = arguments.cores or 1
-            constraint = arguments.constraint
-            allocation = arguments.allocation or "bii_dsc_community"
-            partition = arguments.partition
-            if arguments.gres is not None:
-
-                gres = arguments.gres
-
-            elif key in ["v100"]:
-
-                gres = "gpu:v100:1"
-                partition="bii-gpu"
-                account="bii_dsc_community"
-                constraint = None
-                reservation=None
-
-            elif key in ["a100"]:
-
-                gres = "gpu:a100:1"
-                partition="gpu"
-                account="bii_dsc_community"
-                constraint = None
-                reservation=None
-
-            #elif key in ["a100-40"]:
-            #    gres = "gpu:a100:1"
-            #    reservation = "a100_40gb"
-            #elif key in ["a100-80"]:
-            #    gres = "gpu:a100:1"
-            #    reservation = "a100_80gb"
-            elif key in ["a100-localscratch", "a100-dsc"]:
-
-                gres = "gpu:a100:1"
-                reservation="bi_fox_dgx"
-                #constraint="a100_80gb"
-                partition="bii-gpu"
-                account="bii_dsc_community"
-
-                # SBATCH --mem=64GB
-
-            elif key in ["k80"]:
-
-                gres = "gpu:k80:1"
-                partition="gpu"
-                account="bii_dsc_community"
-                constraint = None
-                reservation=None
-
-            elif key in ["p100"]:
-
-                gres = "gpu:p100:1"
-                partition="gpu"
-                account="bii_dsc_community"
-                constraint = None
-                reservation=None
-
-            elif key in ["pod", "a100-pod"]:
-
-                gres = "gpu:a100:1"
-                alllocations = "superpodtest"
-                constraint = "gpupod"
-
-            elif key in ["pod"]:
-
-                gres = "gpu:a100:1"
-                alllocations = "superpodtest"
-                constraint = "gpupod"
-                # reservation="bi_fox_dgx"
-                constraint="a100_80gb"
-
-            else:
-
-                gres = "gpu:v100:1"
-                partition="bii-gpu"
-                account="bii_dsc_community"
-                constraint = None
-                reservation=None
-
-
-
-            time = arguments.time or "30:00"
-
-            rivanna.login(
-                constraint=constraint,
-                reservation=reservation,
-                host=host,
-                cores=cores,
-                allocation=allocation,
-                gres=gres,
-                time=time,
-                account=account,
-                partition=partition,
-                debug=debug
-            )
 
         elif arguments.vpn and arguments.on:
 

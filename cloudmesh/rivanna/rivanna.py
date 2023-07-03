@@ -12,49 +12,57 @@ class Rivanna:
         self.data = dedent(
           """
           rivanna:
-              v100:
-                gpu: v100
-                gres: "gpu:v100:1"
-                partition: "bii-gpu"
-                account: "bii_dsc_community"
-              a100:
-                gpu: a100
-                gres: "gpu:a100:1"
-                partition: "gpu"
-                account: "bii_dsc_community"
-              a100-localscratch:
-                gres: "gpu:a100:1"
-                reservation: "bi_fox_dgx"
-                partition: "bii-gpu"
-                account: "bii_dsc_community"
-              k80:
-                gres: "gpu:k80:1"
-                partition: "gpu"
-                account: "bii_dsc_community"
-              p100:
-                gres: "gpu:p100:1"
-                partition: "gpu"
-                account: "bii_dsc_community"
-              a100-pod:
-                gres: "gpu:a100:1"
-                account: "bii_dsc_community"
-                alllocations: "superpodtest"
-                constraint: "gpupod"
-                partition: gpu
+            v100:
+              gpu: v100
+              gres: "gpu:v100:1"
+              partition: "bii-gpu"
+              account: "bii_dsc_community"
+            a100:
+              gpu: a100
+              gres: "gpu:a100:1"
+              partition: "gpu"
+              account: "bii_dsc_community"
+            a100-localscratch:
+              gres: "gpu:a100:1"
+              reservation: "bi_fox_dgx"
+              partition: "bii-gpu"
+              account: "bii_dsc_community"
+            k80:
+              gres: "gpu:k80:1"
+              partition: "gpu"
+              account: "bii_dsc_community"
+            p100:
+              gres: "gpu:p100:1"
+              partition: "gpu"
+              account: "bii_dsc_community"
+            a100-pod:
+              gres: "gpu:a100:1"
+              account: "bii_dsc_community"
+              alllocations: "superpodtest"
+              constraint: "gpupod"
+              partition: gpu
           greene:
             v100:
               gres: "gpu:v100:1"
             a100:
               gres: "gpu:a100:1"
-          """
+        """
         )
-        self.directive = yaml.safe_load(self.data)[host]
+        self.directive = yaml.safe_load(self.data)
+
+    def parse_sbatch_parameter(self, parameters):
+        result = {}
+        data = parameters.split(",")
+        for line in data:
+            key, value = line.split(":",1)
+            result[key] = value
+        return result
 
     def directive_from_key(self, key):
         return self.directive[key]
 
-    def create_slurm_directives(self, directives):
-
+    def create_slurm_directives(self, host=None, key=None):
+        directives = self.directive[host][key]
         block = ""
 
         def create_direcitve(name):
@@ -66,19 +74,7 @@ class Rivanna:
         return block
 
 
-    def login(self,
-              host="rivanna",
-              cores="1",
-              allocation="bii_dsc_community",
-              gres="gpu:v100:1",
-              time="30:00",
-              partition="gpu",
-              constraint=None,
-              reservation=None,
-              account=None,
-              debug=False
-
-    ):
+    def login(self, host, key):
         """
         ssh on rivanna by executing an interactive job command
 
@@ -89,27 +85,27 @@ class Rivanna:
         :return:
         :rtype:
         """
-        if account is None:
-            account = ""
-        else:
-            account = f"--account={account}"
-        if partition is None:
-            partition = ""
-        else:
-            partition = f"--partition={partition}"
-        if constraint is None:
-            constraint = ""
-        else:
-            constraint = f"--constraint={constraint}"
-        if reservation is None:
-            reservation = ""
-        else:
-            reservation = f"--reservation={reservation}"
-        command = f'ssh -tt {host} "/opt/rci/bin/ijob {reservation} {constraint} {account} -c {cores} {partition} --gres={gres} --time={time}"'
+
+        def create_parameters(host, key):
+
+            directives = self.directive[host][key]
+            block = ""
+
+            def create_direcitve(name):
+                return f" --{name}={directives[name]}"
+
+            for key in directives:
+                block = block + create_direcitve(key)
+
+            return block
+
+
+        parameters = create_parameters(host, key)
+        command = f'ssh -tt {host} "/opt/rci/bin/ijob{parameters}"'
 
         Console.msg(command)
-        if not debug:
-            os.system(command)
+        # if not self.debug:
+        #     os.system(command)
         return ""
 
 
