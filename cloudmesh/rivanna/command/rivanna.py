@@ -21,6 +21,8 @@ class RivannaCommand(PluginCommand):
           Usage:
                 rivanna storage info DIRECTORY [--info]
                 rivanna login [--allocation=ALLOCATION] [--gres=GRES] [--constraint=CONSTRAINT] [--partition=PARTITION] [--cores=CORES] [--host=HOST] [--time=TIME] [KEY] [--debug]
+                rivanna directive slurm list
+                rivanna directive slurm [--allocation=ALLOCATION] [--gres=GRES] [--constraint=CONSTRAINT] [--partition=PARTITION] [--cores=CORES] [--cpus=CPUS] [--host=HOST] [--time=TIME] [KEY] [--debug]
                 rivanna tutorial [KEYWORD]
                 rivanna vpn on
                 rivanna vpn off
@@ -133,6 +135,34 @@ class RivannaCommand(PluginCommand):
         if arguments.storage:
 
             Console.error("not implemented")
+
+        elif arguments.directive and arguments.slurm and arguments.list:
+
+            print (rivanna.diretcive)
+
+        elif arguments.directive and arguments.slurm and arguments.KEY and not arguments.login:
+
+            key = arguments.KEY
+
+            d = rivanna.directive[key]
+
+            slurm_directive = rivanna.create_slurm_directives(d)
+
+            print(slurm_directive)
+
+        elif arguments.directive and arguments.slurm:
+
+            directive = rivanna.create_slurm_directives(
+                    constraint=arguments.constraint,
+                    reservation=arguments.reservation,
+                    cores=arguments.cores,
+                    account=arguments.account,
+                    gres=arguments.gres,
+                    time=arguments.time,
+                    partition=arguments.partition,
+                    cpus=arguments.cpus,
+            )
+
 
         elif arguments.login:
 
