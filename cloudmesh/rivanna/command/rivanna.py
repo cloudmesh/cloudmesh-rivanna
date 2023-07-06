@@ -34,7 +34,7 @@ class RivannaCommand(PluginCommand):
                 rivanna vpn info
                 rivanna vpn status
                 rivanna ticket
-                rivana singularity build DEFFILE
+                rivanna singularity build DEFFILE
 
 
           This command simplifys access to rivanna.
