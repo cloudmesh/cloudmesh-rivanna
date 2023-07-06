@@ -1,3 +1,5 @@
+import shutil
+
 import yaml
 
 from cloudmesh.shell.command import command
@@ -11,6 +13,7 @@ from cloudmesh.shell.command import map_parameters
 from cloudmesh.common.parameter import Parameter
 from cloudmesh.common.variables import Variables
 from cloudmesh.common.util import banner
+from cloudmesh.common.Shell import Shell
 
 class RivannaCommand(PluginCommand):
 
@@ -31,6 +34,7 @@ class RivannaCommand(PluginCommand):
                 rivanna vpn info
                 rivanna vpn status
                 rivanna ticket
+                rivana singularity build DEFFILE
 
 
           This command simplifys access to rivanna.
@@ -137,6 +141,12 @@ class RivannaCommand(PluginCommand):
         if arguments.storage:
 
             Console.error("not implemented")
+
+        elif arguments.singularity and arguments.build:
+
+            buidlfile = arguments.DEFFILE
+
+            rivanna.create_singularity_image(buidlfile)
 
         elif arguments.login:
 
