@@ -190,7 +190,7 @@ class Rivanna:
 
             timer = StopWatch.get("build image")
             print()
-            print(f"Time to build {image}s ({size})", timer)
+            print(f"Time to build {image}s ({size}) {timer}s")
             print()
 
 
