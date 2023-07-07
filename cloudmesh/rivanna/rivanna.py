@@ -168,7 +168,7 @@ class Rivanna:
 
         try:
             cache = os.environ["SINGULARITY_CACHE"]
-            banner("SINGULARITY")
+            banner("Cloudmesh Rivanna Singularity Build")
 
             image = os.path.basename(name.replace(".def", ".sif"))
         
@@ -178,16 +178,21 @@ class Rivanna:
             print("Definition       :", name)
             print()
             StopWatch.start("build image")
+            Shell.rm ("output_image.sif")
             Shell.mkdir(cache) # just in case
             Shell.copy(name,  "build.def")
             os.system("sudo /opt/singularity/3.7.1/bin/singularity build output_image.sif build.def")
             Shell.copy("output_image.sif",  image)
+            Shell.rm ("output_image.sif")
+            Shell.rm ("build.def")
             StopWatch.stop("build image")
+            size = Shell.run(f"du -sh {NAME}.sif")
 
             timer = StopWatch.get("build image")
             print()
-            print(f"Time to build {image}", timer)
+            print(f"Time to build {image}s ({size})", timer)
             print()
+
 
         except Exception as e:
             Console.error(e, traceflag=True)
