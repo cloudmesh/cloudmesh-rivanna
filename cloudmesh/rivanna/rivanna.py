@@ -186,7 +186,7 @@ class Rivanna:
             Shell.rm ("output_image.sif")
             Shell.rm ("build.def")
             StopWatch.stop("build image")
-            size = Shell.run(f"du -sh {name}.sif")
+            size = Shell.run(f"du -sh {image}")
 
             timer = StopWatch.get("build image")
             print()
