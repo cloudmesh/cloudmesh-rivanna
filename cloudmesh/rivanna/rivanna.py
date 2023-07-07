@@ -173,20 +173,21 @@ class Rivanna:
             image = os.path.basename(name.replace(".def", ".sif"))
         
 
-            print (image)
-            print(cache)
-            print(name)
+            print("Image name       :", image)
+            print("Singularity cache:", cache)
+            print("Definition       :", name)
             print()
             StopWatch.start("build image")
-            Shell.mkdir(cache)
+            Shell.mkdir(cache) # just in case
             Shell.copy(name,  "build.def")
             os.system("sudo /opt/singularity/3.7.1/bin/singularity build output_image.sif build.def")
             Shell.copy("output_image.sif",  image)
             StopWatch.stop("build image")
 
             timer = StopWatch.get("build image")
-            print ("Time to build", timer)
-
+            print()
+            print(f"Time to build {image}", timer)
+            print()
 
         except Exception as e:
             Console.error(e, traceflag=True)
