@@ -4,6 +4,7 @@ import os
 from cloudmesh.common.FlatDict import FlatDict
 from textwrap import dedent
 import yaml
+from cloudmesh.common.util import banner
 from cloudmesh.common.StopWatch import StopWatch
 
 class Rivanna:
@@ -153,46 +154,47 @@ class Rivanna:
 
     def create_singularity_image(self, name):
         """
-        #! /bin/sh -x
-
-
-        export SINGULARITY_CACHEDIR=/scratch/$USER/.singularity/
-        export SINGULARITY_CACHEDIR=/$HOME/.singularity/
-        mkdir -p $SINGULARITY_CACHEDIR
-        NAME=$1
-
-        start_total=`date +%s`
-        cp ${NAME}.def build.def
-        #sudo /opt/singularity/3.7.1/bin/singularity build output_image.sif build.def
-        sudo singularity build output_image.sif build.def
-        cp output_image.sif ${NAME}.sif
-        # make -f Makefile clean
-        end_total=`date +%s`
-        time_total=$((end_total-start_total))
-        echo "Time for image build: ${time_total} s"
-
         :param name:
         :type name:
         :return:
         :rtype:
+
+
+        export SINGULARITY_CACHEDIR=/scratch/$USER/.singularity/
+        export SINGULARITY_CACHEDIR=/$HOME/.singularity/
+
+
         """
 
         try:
             cache = os.environ["SINGULARITY_CACHEDIR"]
+            banner("Cloudmesh Rivanna Singularity Build")
+
+            image = os.path.basename(name.replace(".def", ".sif"))
+        
+
+            print("Image name       :", image)
+            print("Singularity cache:", cache)
+            print("Definition       :", name)
+            print()
+            StopWatch.start("build image")
+            Shell.rm ("output_image.sif")
+            Shell.mkdir(cache) # just in case
+            Shell.copy(name,  "build.def")
+            os.system("sudo /opt/singularity/3.7.1/bin/singularity build output_image.sif build.def")
+            Shell.copy("output_image.sif",  image)
+            Shell.rm ("output_image.sif")
+            Shell.rm ("build.def")
+            StopWatch.stop("build image")
+            size = Shell.run(f"du -sh {image}").split()[0]
+
+            timer = StopWatch.get("build image")
+            print()
+            print(f"Time to build {image}s ({size}) {timer}s")
+            print()
+
+
         except Exception as e:
             Console.error(e, traceflag=True)
-
-        image = name.replace(".def", ".sif")
-        StopWatch.start("build image")
-        Shell.copy(name,  "build.def")
-        os.system("sudo singularity build output_image.sif build.def")
-        Shell.copy("output_image.sif",  image)
-        StopWatch.stop("build image")
-
-        timeer = StopWatch.get("build image")
-        print ("Time to build", timeer)
-
-
-
-
+            
 

@@ -1,4 +1,4 @@
-package=rivanna
+65;6800;1cpackage=rivanna
 UNAME=$(shell uname)
 VERSION=`head -1 VERSION`
 
