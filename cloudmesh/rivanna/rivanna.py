@@ -178,7 +178,7 @@ class Rivanna:
         """
 
         try:
-            cache = os.environ["SINGULARITY_CACHE"]
+            cache = os.environ["SINGULARITY_CACHEDIR"]
         except Exception as e:
             Console.error(e, traceflag=True)
 
