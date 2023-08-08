@@ -192,7 +192,6 @@ class Rivanna:
                 os.system("sudo /opt/singularity/3.7.1/bin/singularity build output_image.sif build.def")
             else:
                 os.system("sudo singularity build output_image.sif build.def")
-
             Shell.copy("output_image.sif",  image)
             Shell.rm ("output_image.sif")
             Shell.rm ("build.def")
