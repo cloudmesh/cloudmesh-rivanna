@@ -6,6 +6,7 @@ from textwrap import dedent
 import yaml
 from cloudmesh.common.util import banner
 from cloudmesh.common.StopWatch import StopWatch
+import socket
 
 class Rivanna:
 
@@ -15,6 +16,11 @@ class Rivanna:
         self.data = dedent(
           """
           rivanna:
+            parallel:
+              partition: "parallel"
+              account: "bii_dsc_community"
+              nodes: 2
+              ntask-per-node: 4
             v100:
               gres: "gpu:v100:1"
               partition: "bii-gpu"
@@ -181,7 +187,12 @@ class Rivanna:
             Shell.rm ("output_image.sif")
             Shell.mkdir(cache) # just in case
             Shell.copy(name,  "build.def")
-            os.system("sudo /opt/singularity/3.7.1/bin/singularity build output_image.sif build.def")
+            hostname = socket.gethostname()
+            if hostname in ["udc-aj34-33", "udc-aj34-33"]:
+                os.system("sudo /opt/singularity/3.7.1/bin/singularity build output_image.sif build.def")
+            else:
+                os.system("sudo singularity build output_image.sif build.def")
+
             Shell.copy("output_image.sif",  image)
             Shell.rm ("output_image.sif")
             Shell.rm ("build.def")
