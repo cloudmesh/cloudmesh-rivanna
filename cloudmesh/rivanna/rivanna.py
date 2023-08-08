@@ -173,7 +173,7 @@ class Rivanna:
         """
 
         try:
-            cache = os.environ["SINGULARITY_CACHE"]
+            cache = os.environ["SINGULARITY_CACHEDIR"]
             banner("Cloudmesh Rivanna Singularity Build")
 
             image = os.path.basename(name.replace(".def", ".sif"))
@@ -200,7 +200,7 @@ class Rivanna:
 
             timer = StopWatch.get("build image")
             print()
-            print(f"Time to build {image}s ({size})", timer)
+            print(f"Time to build {image}s ({size}) {timer}s")
             print()
 
 
