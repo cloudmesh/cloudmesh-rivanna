@@ -35,7 +35,7 @@ class RivannaCommand(PluginCommand):
                 rivanna vpn status
                 rivanna ticket
                 rivanna singularity build DEFFILE
-
+                rivanna jupyter --port=PORT
 
           This command simplifys access to rivanna.
 
@@ -117,6 +117,7 @@ class RivannaCommand(PluginCommand):
         variables["debug"] = True
 
         map_parameters(arguments,
+                       "port",
                        "host",
                        "sbatch",
                        "debug")
@@ -138,7 +139,12 @@ class RivannaCommand(PluginCommand):
                       timeout=30)
             return vpn
 
-        if arguments.storage:
+        if arguments.jupyter:
+
+            port = arguments.port or 8000
+            rivanna.jupyter(port=port)
+
+        elif arguments.storage:
 
             Console.error("not implemented")
 

@@ -10,6 +10,16 @@ import socket
 
 class Rivanna:
 
+    def jupyter(self, port=8000):
+        self.port = port
+
+        # test if vpn is on
+
+        # start login on machine and start jupyter
+        "jupyter notebook --no-browser --port=<PORT>"
+        # open tunnel
+        "ssh -L 8080:localhost:<PORT> <REMOTE_USER>@<REMOTE_HOST>"
+        # access to notebook on localhost
 
     def __init__(self, host="rivanna", debug=False):
         self.debug = debug

@@ -13,3 +13,26 @@ Documentation
 see cloudmesh.cmd5
 
 * https://github.com/cloudmesh/cloudmesh.cmd5
+
+
+
+## Jupyter on rivanna
+
+```
+# cms vpn connect
+local>
+  cms rivanna a100
+a100>
+  # source your ENV3
+  pip install pip -U
+  pip install jupyterlab 
+  pip install jupyter
+```
+
+
+```
+rivanna>
+  pip install pip -U
+  pip install jupyterlab
+  pip install notebook
+```
