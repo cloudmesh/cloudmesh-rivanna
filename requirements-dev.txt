@@ -1,3 +1,7 @@
+wheel
+pip-tools
+pipdeptree
 pytest
+pytest-cov
 coverage
 flake8

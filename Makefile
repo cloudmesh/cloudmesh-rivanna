@@ -67,7 +67,7 @@ dist:
 
 patch: clean twine
 	$(call banner, "patch")
-	bump2version --allow-dirty patch
+	# bump2version --allow-dirty patch
 	python setup.py sdist bdist_wheel
 	git push origin main --tags
 	twine check dist/*
