@@ -11,6 +11,15 @@ import socket
 class Rivanna:
 
     def jupyter(self, port=8000):
+        """
+        Start a Jupyter notebook on Rivanna.
+
+        Args:
+            port (int): The port number for Jupyter. Default is 8000.
+
+        Note:
+            This method assumes a VPN connection is active.
+        """
         self.port = port
 
         # test if vpn is on
@@ -22,6 +31,13 @@ class Rivanna:
         # access to notebook on localhost
 
     def __init__(self, host="rivanna", debug=False):
+        """
+        Initialize the Rivanna class.
+
+        Args:
+            host (str): The hostname, default is "rivanna".
+            debug (bool): Enable debugging if True, default is False.
+        """
         self.debug = debug
         self.data = dedent(
           """
@@ -75,6 +91,15 @@ class Rivanna:
         self.directive = yaml.safe_load(self.data)
 
     def parse_sbatch_parameter(self, parameters):
+        """
+        Parse the parameters string and convert it to a dictionary.
+
+        Args:
+            parameters (str): Comma-separated string of parameters.
+
+        Returns:
+            dict: A dictionary containing parsed parameters.
+        """
         result = {}
         data = parameters.split(",")
         for line in data:
@@ -83,9 +108,28 @@ class Rivanna:
         return result
 
     def directive_from_key(self, key):
+        """
+        Retrieve the Slurm directives for a specific key.
+
+        Args:
+            key (str): The key to retrieve directives.
+
+        Returns:
+            dict: A dictionary containing Slurm directives for the specified key.
+        """
         return self.directive[key]
 
     def create_slurm_directives(self, host=None, key=None):
+        """
+        Create Slurm directives based on the provided host and key.
+
+        Args:
+            host (str): The hostname.
+            key (str): The key to retrieve directives.
+
+        Returns:
+            str: A string containing Slurm directives for the specified host and key.
+        """
         directives = self.directive[host][key]
         block = ""
 
@@ -100,14 +144,14 @@ class Rivanna:
 
     def login(self, host, key):
         """
-        ssh on rivanna by executing an interactive job command
+        SSH on Rivanna by executing an interactive job command.
 
-        :param gpu:
-        :type gpu:
-        :param memory:
-        :type memory:
-        :return:
-        :rtype:
+        Args:
+            host (str): The hostname.
+            key (str): The key used for authentication.
+
+        Returns:
+            str: Empty string.
         """
 
         def create_parameters(host, key):
@@ -135,50 +179,68 @@ class Rivanna:
 
     def cancel(self, job_id):
         """
-        cancels the job with the given id
+        Cancel the job with the given ID.
 
-        :param job_id:
-        :type job_id:
-        :return:
-        :rtype:
+        Args:
+            job_id (str): The ID of the job to be canceled.
+
+        Raises:
+            NotImplementedError: This method is not implemented.
         """
         raise NotImplementedError
 
     def storage(self, directory=None):
         """
-        get info about the directory
+        Get information about the specified directory.
 
-        :param directory:
-        :type directory:
-        :return:
-        :rtype:
+        Args:
+            directory (str): The directory to get information about.
+
+        Raises:
+            NotImplementedError: This method is not implemented.
         """
         raise NotImplementedError
 
     def edit(self, filename=None, editor="emacs"):
         """
-        start the commandline editor of choice on the file on rivanna in the current terminal
+        Start the command-line editor of choice on the file on Rivanna in the current terminal.
 
-        :param filename:
-        :type filename:
-        :return:
-        :rtype:
+        Args:
+            filename (str): The name of the file to be edited.
+            editor (str): The command-line editor to use, default is "emacs".
+
+        Returns:
+            None
         """
+        raise NotImplementedError
 
     def browser(self, url):
+        """
+        Open the default web browser with the specified URL.
+
+        Args:
+            url (str): The URL to open in the web browser.
+
+        Returns:
+            None
+        """
         Shell.browser(filename=url)
 
     def create_singularity_image(self, name):
         """
-        :param name:
-        :type name:
-        :return:
-        :rtype:
+        Create a Singularity image on Rivanna.
 
+        Args:
+            name (str): The name of the Singularity image.
 
-        export SINGULARITY_CACHEDIR=/scratch/$USER/.singularity/
-        export SINGULARITY_CACHEDIR=/$HOME/.singularity/
+        Returns:
+            None
 
+        Requires:
+            export SINGULARITY_CACHEDIR=/scratch/$USER/.singularity/
+            export SINGULARITY_CACHEDIR=/$HOME/.singularity/
+
+            Please note it is prefered to use scratch as the home directory may have too little storage
 
         """
 
