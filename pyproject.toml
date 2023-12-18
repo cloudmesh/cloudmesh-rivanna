@@ -9,7 +9,7 @@ requires = [
 [project]
 name = "cloudmesh-rivanna"
 version = "5.0.17"
-description = "A set of useful APIs for cloudmesh"
+description = "A cloudmesh command rivanna to interact easily with UVA rivanna"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {file = "LICENSE"}
