@@ -51,8 +51,13 @@ classifiers = [
 dependencies = [
     "cloudmesh-cmd5",
 ]
+
 [project.urls]
-"Documentation" = "https://github.com/cloudmesh/cloudmesh-common"
+Homepage = "https://github.com/cloudmesh/cloudmesh-rivanna"
+Documentation = "https://github.com/cloudmesh/cloudmesh-rivanna/blob/main/README.md"
+Repository = "https://github.com/cloudmesh/cloudmesh-rivanna.git"
+Issues = "https://github.com/cloudmesh/cloudmesh-rivanna/issues"
+Changelog = "https://github.com/cloudmesh/cloudmesh-rivanna/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src/"]
