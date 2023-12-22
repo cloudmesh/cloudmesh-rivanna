@@ -214,18 +214,6 @@ class Rivanna:
         """
         raise NotImplementedError
 
-    def browser(self, url):
-        """
-        Open the default web browser with the specified URL.
-
-        Args:
-            url (str): The URL to open in the web browser.
-
-        Returns:
-            None
-        """
-        Shell.browser(filename=url)
-
     def create_singularity_image(self, name):
         """
         Create a Singularity image on Rivanna.

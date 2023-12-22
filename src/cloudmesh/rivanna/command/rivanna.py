@@ -34,7 +34,7 @@ class RivannaCommand(PluginCommand):
                 rivanna vpn info
                 rivanna vpn status
                 rivanna ticket
-                rivanna singularity build DEFFILE
+                rivanna image build DEFFILE
                 rivanna jupyter --port=PORT
 
           This command simplifys access to rivanna.
@@ -61,8 +61,8 @@ class RivannaCommand(PluginCommand):
 
                 others to be added from rivannas hardware description
 
-            rivanna tutorial singularity
-                shows the rivanna singularity information on infomall.org
+            rivanna tutorial apptainer
+                shows the rivanna apptainer documentation on the UVA website
 
             rivanna tutorial hpc
                 shows the general rivanna hpc information on infomall.org
@@ -70,7 +70,7 @@ class RivannaCommand(PluginCommand):
             rivanna tutorial pod
                 shows the general rivanna pod information on infomall.org
 
-            rivanna tutorial globue
+            rivanna tutorial globus
                 shows the general rivanna globus information on infomall.org
 
             rivanna tutorial rclone
@@ -148,11 +148,11 @@ class RivannaCommand(PluginCommand):
 
             Console.error("not implemented")
 
-        elif arguments.singularity and arguments.build:
+        elif arguments.image and arguments.build:
 
             buidlfile = arguments.DEFFILE
 
-            rivanna.create_singularity_image(buidlfile)
+            rivanna.create_apptainer_image(buidlfile)
 
         elif arguments.login:
 
@@ -229,30 +229,29 @@ class RivannaCommand(PluginCommand):
             keyword = arguments.KEYWORD
 
             if keyword in ["pod"]:
-                rivanna.browser("https://infomall.org/uva/docs/tutorial/rivanna-superpod/")
+                Shell.browser("https://infomall.org/uva/docs/tutorial/rivanna-superpod/")
 
             elif keyword in ["rclone"]:
-                rivanna.browser("https://infomall.org/uva/docs/tutorial/rclone/")
+                Shell.browser("https://infomall.org/uva/docs/tutorial/rclone/")
 
             elif keyword in ["globus"]:
-                rivanna.browser("https://infomall.org/uva/docs/tutorial/globus/")
+                Shell.browser("https://infomall.org/uva/docs/tutorial/globus/")
 
-            elif keyword in ["singularity"]:
-                rivanna.browser("https://infomall.org/uva/docs/tutorial/singularity/")
+            elif keyword in ["apptainer"]:
+                #rivanna.browser("https://infomall.org/uva/docs/tutorial/singularity/")
+                Shell.browser("https://www.rc.virginia.edu/userinfo/rivanna/software/apptainer/")
 
             elif keyword in ["training"]:
-                rivanna.browser("https://infomall.org/uva/docs/tutorial/cybertraining/")
+                Shell.browser("https://infomall.org/uva/docs/tutorial/cybertraining/")
 
             elif keyword in ["hpc", "system"]:
-                rivanna.browser("https://infomall.org/uva/docs/tutorial/rivanna/")
-
-
+                Shell.browser("https://infomall.org/uva/docs/tutorial/rivanna/")
 
             else:
-                rivanna.browser("https://infomall.org/uva/docs/tutorial/")
+                Shell.browser("https://infomall.org/uva/docs/tutorial/")
 
         elif arguments.ticket:
 
-            rivanna.browser("https://www.rc.virginia.edu/form/support-request/")
+            Shell.browser("https://www.rc.virginia.edu/form/support-request/")
 
         return ""
