@@ -214,55 +214,43 @@ class Rivanna:
         """
         raise NotImplementedError
 
-    def create_singularity_image(self, name):
+    def create_apptainer_image(self, name):
         """
-        Create a Singularity image on Rivanna.
+        Create a apptainer image on Rivanna.
 
         Args:
-            name (str): The name of the Singularity image.
+            name (str): The name of the apptainer image.
 
         Returns:
             None
 
         Requires:
-            export SINGULARITY_CACHEDIR=/scratch/$USER/.singularity/
-            export SINGULARITY_CACHEDIR=/$HOME/.singularity/
+            export APPTAINER_CACHEDIR=/scratch/$USER/.apptainer/
+            or
+            export APPTAINER_CACHEDIR=/$HOME/.apptainer/
 
             Please note it is prefered to use scratch as the home directory may have too little storage
 
         """
 
         try:
-            cache = os.environ["SINGULARITY_CACHEDIR"]
+            cache = os.environ["APPTAINER_CACHEDIR"]
             banner("Cloudmesh Rivanna Singularity Build")
 
             image = os.path.basename(name.replace(".def", ".sif"))
         
-
             print("Image name       :", image)
             print("Singularity cache:", cache)
             print("Definition       :", name)
             print()
             StopWatch.start("build image")
-            Shell.rm ("output_image.sif")
-            Shell.mkdir(cache) # just in case
-            Shell.copy(name,  "build.def")
-            hostname = socket.gethostname()
-            if hostname in ["udc-aj34-33", "udc-aj34-33"]:
-                os.system("sudo /opt/singularity/3.7.1/bin/singularity build output_image.sif build.def")
-            else:
-                os.system("sudo singularity build output_image.sif build.def")
-            Shell.copy("output_image.sif",  image)
-            Shell.rm ("output_image.sif")
-            Shell.rm ("build.def")
+            os.system("apptainer build {image} {name}")
             StopWatch.stop("build image")
             size = Shell.run(f"du -sh {image}").split()[0]
-
             timer = StopWatch.get("build image")
             print()
             print(f"Time to build {image}s ({size}) {timer}s")
             print()
-
 
         except Exception as e:
             Console.error(e, traceflag=True)
