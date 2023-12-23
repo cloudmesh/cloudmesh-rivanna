@@ -238,7 +238,7 @@ class Rivanna:
             banner("Cloudmesh Rivanna Singularity Build")
 
             image = os.path.basename(name.replace(".def", ".sif"))
-        
+
             print("Image name       :", image)
             print("Singularity cache:", cache)
             print("Definition       :", name)
