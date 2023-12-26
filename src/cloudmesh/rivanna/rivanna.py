@@ -41,6 +41,11 @@ class Rivanna:
         self.debug = debug
         self.data = dedent(
           """
+          macos:
+            macos
+              partition: "macos"
+              account: "macos"
+              gres": "none"
           rivanna:
             parallel:
               partition: "parallel"
