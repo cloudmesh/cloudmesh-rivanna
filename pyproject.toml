@@ -60,5 +60,5 @@ Issues = "https://github.com/cloudmesh/cloudmesh-rivanna/issues"
 Changelog = "https://github.com/cloudmesh/cloudmesh-rivanna/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
-where = ["src/"]
+where = ["src"]
 include = ["cloudmesh.rivanna", "cloudmesh.rivanna.*"]
