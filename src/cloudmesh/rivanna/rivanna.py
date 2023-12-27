@@ -42,7 +42,7 @@ class Rivanna:
         self.data = dedent(
           """
           macos:
-            macos
+            macos:
               partition: "macos"
               account: "macos"
               gres": "none"
