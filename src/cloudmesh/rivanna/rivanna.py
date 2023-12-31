@@ -73,6 +73,10 @@ class Rivanna:
               gres: "gpu:p100:1"
               partition: "gpu"
               account: "bii_dsc_community"
+            a6000:
+              gres: "gpu:a6000:1"
+              partition: "gpu"
+              account: "bii_dsc_community"
             a100-pod:
               gres: "gpu:a100:1"
               account: "bii_dsc_community"
