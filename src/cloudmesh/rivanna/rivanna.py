@@ -91,6 +91,9 @@ class Rivanna:
               gres: "gpu:v100:1"
             a100:
               gres: "gpu:a100:1"
+          maltlab:
+            rtx_titan:
+              gres: "gpu:rtx_titan:1"
         """
         )
         self.directive = yaml.safe_load(self.data)
