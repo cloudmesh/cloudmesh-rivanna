@@ -80,6 +80,10 @@ class Rivanna:
               gres: "gpu:p100:1"
               partition: "gpu"
               account: "bii_dsc_community"
+            a6000:
+              gres: "gpu:a6000:1"
+              partition: "gpu"
+              account: "bii_dsc_community"
             a100-pod:
               gres: "gpu:a100:1"
               account: "bii_dsc_community"
@@ -98,6 +102,9 @@ class Rivanna:
               gres: "gpu:v100:1"
             a100:
               gres: "gpu:a100:1"
+          maltlab:
+            rtx_titan:
+              gres: "gpu:rtx_titan:1"
         """
         )
         self.directive = yaml.safe_load(self.data)
