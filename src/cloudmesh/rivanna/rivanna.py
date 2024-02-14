@@ -105,6 +105,12 @@ class Rivanna:
           maltlab:
             rtx_titan:
               gres: "gpu:rtx_titan:1"
+          crusher:
+            default:
+              partition: "gen150_smartsim"          
+          frontier:
+            default:
+              partition: "gen150_smartsim"          
         """
         )
         self.directive = yaml.safe_load(self.data)
