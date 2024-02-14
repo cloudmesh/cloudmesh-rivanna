@@ -107,10 +107,10 @@ class Rivanna:
               gres: "gpu:rtx_titan:1"
           crusher:
             default:
-              partition: "gen150_smartsim"          
+              partition: "batch"          
           frontier:
             default:
-              partition: "gen150_smartsim"          
+              partition: "batch"          
         """
         )
         self.directive = yaml.safe_load(self.data)
