@@ -7,6 +7,7 @@ import yaml
 from cloudmesh.common.util import banner
 from cloudmesh.common.StopWatch import StopWatch
 import socket
+import sys
 
 class Rivanna:
 
@@ -39,8 +40,14 @@ class Rivanna:
             debug (bool): Enable debugging if True, default is False.
         """
         self.debug = debug
+        print ("HOST", host)
         self.data = dedent(
           """
+          ubuntu:
+            ubuntu:
+              partition: "ubuntu"
+              account: "ubuntu"
+              gres: "none"
           macos:
             macos:
               partition: "macos"
@@ -78,6 +85,10 @@ class Rivanna:
               gres: "gpu:p100:1"
               partition: "gpu"
               account: "bii_dsc_community"
+            a6000:
+              gres: "gpu:a6000:1"
+              partition: "gpu"
+              account: "bii_dsc_community"
             a100-pod:
               gres: "gpu:a100:1"
               account: "bii_dsc_community"
@@ -99,6 +110,12 @@ class Rivanna:
           maltlab:
             rtx_titan:
               gres: "gpu:rtx_titan:1"
+          crusher:
+            default:
+              partition: "batch"          
+          frontier:
+            default:
+              partition: "batch"          
         """
         )
         self.directive = yaml.safe_load(self.data)
@@ -143,7 +160,11 @@ class Rivanna:
         Returns:
             str: A string containing Slurm directives for the specified host and key.
         """
-        directives = self.directive[host][key]
+        try:
+            directives = self.directive[host][key]
+        except:
+            Console.error(f"In directive searching for:\n  host {host}\n  key {key}\nNot found")
+            sys.exit()
         block = ""
 
         def create_direcitve(name):
