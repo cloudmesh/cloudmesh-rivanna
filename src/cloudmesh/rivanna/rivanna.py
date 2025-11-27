@@ -101,7 +101,11 @@ class Rivanna:
             rtx3090:
               gres: "gpu:rtx3090:1"
               partition: "gpu"
-              account: "bii_dsc_community"          
+              account: "bii_dsc_community"
+          hipergator:
+            b200:
+              gres: "gpu:1"
+              partition: "hpg-b200"     
           greene:
             v100:
               gres: "gpu:v100:1"
