@@ -52,7 +52,7 @@ class Rivanna:
             macos:
               partition: "macos"
               account: "macos"
-              gres": "none"
+              gres: "none"
           rivanna:
             parallel:
               partition: "parallel"
@@ -93,7 +93,7 @@ class Rivanna:
               gres: "gpu:a100:1"
               account: "bii_dsc_community"
               constraint: "gpupod"
-              partition: gpu
+              partition: "gpu"
             rtx2080:
               gres: "gpu:rtx2080:1"
               partition: "gpu"
