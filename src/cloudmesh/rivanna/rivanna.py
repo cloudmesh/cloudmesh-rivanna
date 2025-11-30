@@ -105,7 +105,10 @@ class Rivanna:
           hipergator:
             b200:
               gres: "gpu:1"
-              partition: "hpg-b200"     
+              partition: "hpg-b200"
+            l4:
+              gres: "gpu:1"
+              partition: "hpg-turin"   
           greene:
             v100:
               gres: "gpu:v100:1"
